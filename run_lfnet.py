@@ -119,15 +119,23 @@ def main(config):
     print('Done.')
 
     # Ready to feed input images
-    img_paths = [x.path for x in os.scandir(config.in_dir) if x.name.endswith('.jpg') or x.name.endswith('.png')]
-    print('Found {} images...'.format(len(img_paths)))
+    #img_paths = [x.path for x in os.scandir(config.in_dir) if x.name.endswith('.jpg') or x.name.endswith('.png')]
+    #print('Found {} images...'.format(len(img_paths)))
 
     if not os.path.exists(config.out_dir):
         os.makedirs(config.out_dir)
 
     avg_elapsed_time = 0
 
-    for img_path in tqdm(img_paths):
+    #for img_path in tqdm(img_paths):
+    while config.in_dir:
+        img_path = config.in_dir.pop(0)
+
+        if img_path.endswith('.txt'):
+            config.in_dir = open(img_path).read().splitlines() + config.in_dir
+            continue
+
+        print(f"\nExtracting features for {img_path}")
         photo = imread(img_path)
         height, width = photo.shape[:2]
         longer_edge = max(height, width)
@@ -196,8 +204,10 @@ if __name__ == '__main__':
                             help='the number of threads (for dataset)')
 
     io_arg = add_argument_group('In/Out', parser)
-    io_arg.add_argument('--in_dir', type=str, default='./samples',
-                            help='input image directory')
+    # io_arg.add_argument('--in_dir', type=str, default='./samples',
+    #                         help='input image directory')
+    io_arg.add_argument("--in_dir", type=str, required=True, 
+                            nargs='+', help='images / list')
     # io_arg.add_argument('--in_dir', type=str, default='./release/outdoor_examples/images/sacre_coeur/dense/images',
     #                         help='input image directory')
     io_arg.add_argument('--out_dir', type=str, default='./dump_feats',
