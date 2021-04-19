@@ -202,7 +202,7 @@ if __name__ == '__main__':
     #                         help='input image directory')
     io_arg.add_argument('--out_dir', type=str, default='./dump_feats',
                             help='where to save keypoints')
-    io_arg.add_argument('--full_output', type=str2bool, default=True,
+    io_arg.add_argument('--full_output', type=str2bool, default=False,
                             help='dump keypoint image')
 
     model_arg = add_argument_group('Model', parser)
